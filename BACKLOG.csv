@@ -1,0 +1,36 @@
+﻿Sprint,User Story,ID,Tâche,Charge (h),Responsable proposé,MoSCoW,Statut du document source
+1,US1,T1.1,Initialiser le dépôt Git et l’environnement Python,1,A,Must,Terminé
+1,US1,T1.2,Télécharger les fichiers officiels MovieLens,0.5,A,Must,Terminé
+1,US1,T1.3,"Charger notes, catalogue et identifiants utilisateurs",0.5,A,Must,Terminé
+1,US2,T2.1,Calculer les statistiques descriptives,1,A,Must,Terminé
+1,US2,T2.2,Tracer la distribution des notes,1,B,Must,À faire
+1,US2,T2.3,Examiner les films les plus notés et l’activité des utilisateurs,1,A,Must,Terminé
+1,US2,T2.4,Préparer les graphiques et conclusions du notebook,1,B,Must,À faire
+1,US3,T3.1,Contrôler les valeurs manquantes et les identifiants,0.5,B,Must,Terminé
+1,US3,T3.2,Supprimer les doublons utilisateur-film,0.5,B,Must,Terminé
+1,US3,T3.3,Construire les genres à partir des 19 indicateurs,1,B,Must,En cours
+1,US3,T3.4,Convertir les dates et exporter les CSV nettoyés,1,B,Must,
+1,US4,T4.1,Calculer la note moyenne par film et le nombre de votes,1.5,A,Must,À faire
+1,US4,T4.2,Appliquer le seuil de votes et retourner le Top 10,0.5,A,Must,En cours
+1,US4,T4.3,Tester le classement et la limite de 10 résultats,1,A,Must,Terminé
+1,US5,T5.1,Initialiser l’interface Streamlit,1,A,Should,Terminé
+1,US5,T5.2,Ajouter la sélection du seuil de votes,1,A,Should,En cours
+1,US5,T5.3,"Afficher les titres, les notes et les votes",1,B,Should,
+1,US5,T5.4,Mettre en forme et tester l’interface,1,B,Should,
+1,US6,T6.1,Rédiger les étapes d’installation et de lancement,1,B,Should,
+1,US6,T6.2,Documenter les choix de code et vérifier le lancement,1,B,Should,
+2,US7,T7.1,Vectoriser les genres avec TF-IDF,2,A,Must,Terminé
+2,US7,T7.2,Calculer la similarité cosinus entre les films,2,A,Must,Terminé
+2,US7,T7.3,Retourner les films similaires au titre choisi,2,A,Must,En cours
+2,US8,T8.1,Construire la matrice de notes utilisateur × film,1.5,B,Should,Terminé
+2,US8,T8.2,Calculer la similarité entre utilisateurs,1.5,B,Should,Terminé
+2,US8,T8.3,Prédire les notes avec le k-NN,1.5,B,Should,À faire
+2,US8,T8.4,Tester les prédictions et l’exclusion des films notés,0.5,B,Should,Terminé
+2,US9,T9.1,Charger le découpage officiel train/test,0.5,B,Must,En cours
+2,US9,T9.2,"Mesurer RMSE, MAE et Precision@10",1.5,B,Must,À faire
+2,US9,T9.3,Comparer aux références et interpréter les résultats,1,A,Must,Terminé
+2,US10,T10.1,Fusionner les rangs des deux modèles,2,A,Could,Terminé
+2,US10,T10.2,Intégrer les modes dans Streamlit,1.5,"A (1 h) + B (0,5 h)",Could,À faire
+2,US10,T10.3,Préparer le parcours de démonstration,0.5,B,Could,Terminé
+2,US11,T11.1,Rédiger le rapport technique,1,B,Could,En cours
+2,US11,T11.2,Préparer les slides de soutenance,1,B,Could,Terminé

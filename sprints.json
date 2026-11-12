@@ -1,0 +1,208 @@
+[
+  {
+    "id": "US1",
+    "label": "Installer le projet et charger MovieLens",
+    "priority": "Must",
+    "hours": 2,
+    "sp": 1,
+    "importance": 10,
+    "sprint": 1,
+    "tasks": [
+      "T1.1 Initialiser le dépôt Git et l’environnement Python (1 h)",
+      "T1.2 Télécharger les fichiers officiels MovieLens (0,5 h)",
+      "T1.3 Charger notes, catalogue et identifiants utilisateurs (0,5 h)"
+    ]
+  },
+  {
+    "id": "US2",
+    "label": "Explorer les notes et le catalogue",
+    "priority": "Must",
+    "hours": 4,
+    "sp": 2,
+    "importance": 9,
+    "sprint": 1,
+    "tasks": [
+      "T2.1 Calculer les statistiques descriptives (1 h)",
+      "T2.2 Tracer la distribution des notes (1 h)",
+      "T2.3 Examiner les films les plus notés et l’activité des utilisateurs (1 h)",
+      "T2.4 Préparer les graphiques et conclusions du notebook (1 h)"
+    ]
+  },
+  {
+    "id": "US3",
+    "label": "Contrôler et nettoyer les données",
+    "priority": "Must",
+    "hours": 3,
+    "sp": 2,
+    "importance": 8,
+    "sprint": 1,
+    "tasks": [
+      "T3.1 Contrôler les valeurs manquantes et les identifiants (0,5 h)",
+      "T3.2 Supprimer les doublons utilisateur-film (0,5 h)",
+      "T3.3 Construire les genres à partir des 19 indicateurs (1 h)",
+      "T3.4 Convertir les dates et exporter les CSV nettoyés (1 h)"
+    ]
+  },
+  {
+    "id": "US4",
+    "label": "Calculer le Top 10 de référence",
+    "priority": "Must",
+    "hours": 3,
+    "sp": 2,
+    "importance": 8,
+    "sprint": 1,
+    "tasks": [
+      "T4.1 Calculer la note moyenne par film et le nombre de votes (1,5 h)",
+      "T4.2 Appliquer le seuil de votes et retourner le Top 10 (0,5 h)",
+      "T4.3 Tester le classement et la limite de 10 résultats (1 h)"
+    ]
+  },
+  {
+    "id": "US5",
+    "label": "Afficher les résultats dans Streamlit",
+    "priority": "Should",
+    "hours": 4,
+    "sp": 2,
+    "importance": 6,
+    "sprint": 1,
+    "tasks": [
+      "T5.1 Initialiser l’interface Streamlit (1 h)",
+      "T5.2 Ajouter la sélection du seuil de votes (1 h)",
+      "T5.3 Afficher les titres, les notes et les votes (1 h)",
+      "T5.4 Mettre en forme et tester l’interface (1 h)"
+    ]
+  },
+  {
+    "id": "US6",
+    "label": "Documenter l’installation et le lancement",
+    "priority": "Should",
+    "hours": 2,
+    "sp": 1,
+    "importance": 4,
+    "sprint": 1,
+    "tasks": [
+      "T6.1 Rédiger les étapes d’installation et de lancement (1 h)",
+      "T6.2 Documenter les choix de code et vérifier le lancement (1 h)"
+    ]
+  },
+  {
+    "id": "US7",
+    "label": "Trouver des films similaires par genre",
+    "priority": "Must",
+    "hours": 6,
+    "sp": 3,
+    "importance": 9,
+    "sprint": 2,
+    "tasks": [
+      "T7.1 Vectoriser les genres avec TF-IDF (2 h)",
+      "T7.2 Calculer la similarité cosinus entre les films (2 h)",
+      "T7.3 Retourner les films similaires au titre choisi (2 h)"
+    ]
+  },
+  {
+    "id": "US8",
+    "label": "Recommander avec le k-NN collaboratif",
+    "priority": "Should",
+    "hours": 5,
+    "sp": 3,
+    "importance": 7,
+    "sprint": 2,
+    "tasks": [
+      "T8.1 Construire la matrice de notes utilisateur × film (1,5 h)",
+      "T8.2 Calculer la similarité entre utilisateurs (1,5 h)",
+      "T8.3 Prédire les notes avec le k-NN (1,5 h)",
+      "T8.4 Tester les prédictions et l’exclusion des films notés (0,5 h)"
+    ]
+  },
+  {
+    "id": "US9",
+    "label": "Mesurer la qualité des recommandations",
+    "priority": "Must",
+    "hours": 3,
+    "sp": 2,
+    "importance": 8,
+    "sprint": 2,
+    "tasks": [
+      "T9.1 Charger le découpage officiel train/test (0,5 h)",
+      "T9.2 Mesurer RMSE, MAE et Precision@10 (1,5 h)",
+      "T9.3 Comparer aux références et interpréter les résultats (1 h)"
+    ]
+  },
+  {
+    "id": "US10",
+    "label": "Fusionner les classements dans Streamlit",
+    "priority": "Could",
+    "hours": 4,
+    "sp": 2,
+    "importance": 6,
+    "sprint": 2,
+    "tasks": [
+      "T10.1 Fusionner les rangs des deux modèles (2 h)",
+      "T10.2 Intégrer les modes dans Streamlit (1,5 h)",
+      "T10.3 Préparer le parcours de démonstration (0,5 h)"
+    ]
+  },
+  {
+    "id": "US11",
+    "label": "Préparer le rapport et la soutenance",
+    "priority": "Could",
+    "hours": 2,
+    "sp": 1,
+    "importance": 5,
+    "sprint": 2,
+    "tasks": [
+      "T11.1 Rédiger le rapport technique (1 h)",
+      "T11.2 Préparer les slides de soutenance (1 h)"
+    ]
+  },
+  {
+    "id": "US12",
+    "label": "Préparer MovieLens avec Spark et Parquet",
+    "priority": "Must",
+    "hours": 4,
+    "sp": 3,
+    "sprint": 3,
+    "tasks": [
+      "Lire les fichiers officiels avec schémas Spark",
+      "Nettoyer les notes et contrôler les clés",
+      "Exporter et vérifier les tables Parquet et CSV"
+    ]
+  },
+  {
+    "id": "US13",
+    "label": "Servir le catalogue et les recommandations avec FastAPI",
+    "priority": "Must",
+    "hours": 4,
+    "sp": 3,
+    "sprint": 3,
+    "tasks": [
+      "Implémenter recherche, Top 10, recommandations et statistiques",
+      "Documenter les contrats OpenAPI et vérifier les entrées"
+    ]
+  },
+  {
+    "id": "US14",
+    "label": "Créer et tester l’interface web CinéScope",
+    "priority": "Must",
+    "hours": 3,
+    "sp": 2,
+    "sprint": 3,
+    "tasks": [
+      "Intégrer les parcours Découvrir, Recommandations, Analyse et Évaluation",
+      "Tester les trois modes dans le navigateur et les réponses de l’API"
+    ]
+  },
+  {
+    "id": "US15",
+    "label": "Versionner et livrer la plateforme",
+    "priority": "Must",
+    "hours": 3,
+    "sp": 2,
+    "sprint": 3,
+    "tasks": [
+      "Publier le code dans un dépôt GitHub privé et créer un tag de version",
+      "Préparer et vérifier le déploiement FastAPI sur Vercel",
+      "Documenter les commandes de reproduction et de démo"
+    ]
+  }
+]

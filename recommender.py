@@ -1,8 +1,12 @@
 """Classement de référence, TF-IDF par genre et k-NN utilisateur-utilisateur."""
 import numpy as np
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+
+
+def cosine_similarity(vectors):
+    norms = np.linalg.norm(vectors, axis=1, keepdims=True)
+    normalized = np.divide(vectors, norms, out=np.zeros_like(vectors), where=norms != 0)
+    return normalized @ normalized.T
 
 
 def popularity(ratings, min_votes=20):
@@ -15,8 +19,10 @@ def popularity(ratings, min_votes=20):
 class ContentModel:
     def __init__(self, movies):
         self.movie_ids = pd.Index(movies["movie_id"])
-        vectors = TfidfVectorizer().fit_transform(movies["genres"])
-        self.similarity = cosine_similarity(vectors)
+        tokens = movies["genres"].str.lower().str.get_dummies(sep=" ").to_numpy(dtype=float)
+        inverse_frequency = np.log((len(movies) + 1) / (tokens.sum(axis=0) + 1)) + 1
+        vectors = tokens * inverse_frequency
+        self.similarity = np.round(cosine_similarity(vectors), 12)
 
     def rank(self, movie_id, excluded=()):
         index = self.movie_ids.get_loc(movie_id)

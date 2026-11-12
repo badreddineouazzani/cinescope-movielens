@@ -1,0 +1,10 @@
+data/
+.venv/
+.git/
+**/__pycache__/
+*.ipynb
+requirements-bigdata.txt
+BACKLOG.csv
+sprints.json
+
+tests/
