@@ -22,9 +22,9 @@ function message(target, text, css = "empty") {
   target.replaceChildren(element("p", text, css));
 }
 
-function renderList(target, rows, scoreFormat) {
+function renderList(target, rows, scoreFormat, emptyMessage = "Aucun film pour cette sélection.") {
   if (!rows.length) {
-    message(target, "Aucun film pour cette sélection.");
+    message(target, emptyMessage);
     return;
   }
   const list = element("ol", undefined, "ranking");
@@ -117,18 +117,46 @@ $("query").addEventListener("input", event => {
   timer = setTimeout(() => search(event.target.value), 150);
 });
 
+const genreLabels = {
+  Action: "Action", Adventure: "Aventure", Animation: "Animation", Children: "Jeunesse",
+  Comedy: "Comédie", Crime: "Policier", Documentary: "Documentaire", Drama: "Drame",
+  Fantasy: "Fantastique", Film_Noir: "Film noir", Horror: "Horreur", Musical: "Comédie musicale",
+  Mystery: "Mystère", Romance: "Romance", Sci_Fi: "Science-fiction", Thriller: "Thriller",
+  War: "Guerre", Western: "Western"
+};
+
+async function loadRecommendationFilters() {
+  try {
+    const {genres, decades} = await api("recommendation-filters");
+    const options = genres.map(value => [genreLabels[value] ?? value, value]);
+    options.sort(([left], [right]) => left.localeCompare(right, "fr"));
+    $("recommendation-genre").append(...options.map(([label, value]) => new Option(label, value)));
+    $("recommendation-decade").append(...decades.map(decade => new Option("Années " + decade, decade)));
+  } catch {
+    const status = $("filter-status");
+    status.textContent = "Les filtres sont indisponibles. Rechargez la page pour réessayer.";
+    status.hidden = false;
+  }
+}
+
 let recoRequest;
 $("reco-form").addEventListener("submit", async event => {
   event.preventDefault();
   recoRequest?.abort();
   const request = new AbortController();
   recoRequest = request;
-  const params = {movie_id:$("film").value};
+  const params = {movie_id: $("film").value};
+  for (const [name, value] of new FormData(event.currentTarget)) {
+    if (value) params[name] = value;
+  }
   message($("recommendations"), "Recherche en cours…");
   try {
     const result = await api("recommendations", params, request.signal);
     if (request.signal.aborted) return;
-    renderList($("recommendations"), result.movies, community);
+    const emptyMessage = params.genre || params.decade
+      ? "Aucun film similaire avec ces filtres. Essayez un autre genre ou une autre décennie."
+      : "Aucun film similaire pour ce titre.";
+    renderList($("recommendations"), result.movies, community, emptyMessage);
   } catch (error) {
     if (error.name !== "AbortError") message($("recommendations"), error.message, "error");
   }
@@ -149,5 +177,6 @@ window.addEventListener("hashchange",route);
 route();
 loadPopular();
 loadStats();
+loadRecommendationFilters();
 $("query").value = "Toy Story";
 search("Toy Story", 1);

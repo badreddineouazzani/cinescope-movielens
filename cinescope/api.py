@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from cinescope.data import ROOT, load
+from cinescope.data import GENRES, ROOT, load
 from cinescope.recommender import ContentModel, popularity
 
 WEB = ROOT / "frontend"
@@ -21,6 +21,10 @@ class Catalog:
         else:
             movies, self.ratings = load()
         self.movies = movies.set_index("movie_id")
+        self.movie_genres = self.movies["genres"].str.get_dummies(sep=" ").astype(bool)
+        years = self.movies["title"].str.extract(r"\((\d{4})\)(?:\s+\([^)]+\))*$", expand=False)
+        self.decades = years.astype("Int64") // 10 * 10
+        self.genres = sorted(genre for genre in GENRES if genre != "unknown" and genre in self.movie_genres)
         self.content = ContentModel(movies)
         self.user_count = self.ratings["user_id"].nunique()
         self.summary = popularity(self.ratings, min_votes=1)
@@ -46,7 +50,7 @@ async def lifespan(app):
 
 
 app = FastAPI(title="CinéScope", description="Catalogue et recommandations MovieLens 100K",
-              version="1.3.0", lifespan=lifespan)
+              version="1.4.0", lifespan=lifespan)
 app.mount("/assets", StaticFiles(directory=WEB), name="assets")
 
 
@@ -86,11 +90,29 @@ def popular(request: Request, min_votes: int = Query(20, ge=1, le=1000),
     return catalog.records(top.index)
 
 
+@app.get("/api/recommendation-filters")
+def recommendation_filters(request: Request):
+    catalog = request.app.state.catalog
+    return {
+        "genres": catalog.genres,
+        "decades": sorted(catalog.decades.dropna().unique().tolist(), reverse=True),
+    }
+
+
 @app.get("/api/recommendations")
 def recommend(request: Request, movie_id: int = Query(ge=1),
-              limit: int = Query(10, ge=1, le=50)):
+              limit: int = Query(10, ge=1, le=50),
+              genre: str | None = Query(None, max_length=32),
+              decade: int | None = Query(None, ge=1800, le=2100, multiple_of=10)):
     catalog = request.app.state.catalog
     if movie_id not in catalog.movies.index:
         raise HTTPException(404, "Film introuvable.")
-    ranking = catalog.content.rank(movie_id).head(limit)
-    return {"movies": catalog.records(ranking.index)}
+    ranked_ids = catalog.content.rank(movie_id).index
+    if genre is not None:
+        if genre not in catalog.genres:
+            raise HTTPException(422, "Genre inconnu.")
+        ranked_ids = ranked_ids[catalog.movie_genres.loc[ranked_ids, genre].to_numpy()]
+    if decade is not None:
+        matches = catalog.decades.loc[ranked_ids].eq(decade).fillna(False)
+        ranked_ids = ranked_ids[matches.to_numpy(dtype=bool)]
+    return {"movies": catalog.records(ranked_ids[:limit])}

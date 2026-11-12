@@ -52,6 +52,15 @@
           <input id="query" type="search" placeholder="Ex. Toy Story" autocomplete="off">
           <label for="film">Film</label>
           <select id="film" required></select>
+          <label for="recommendation-genre">Genre des suggestions</label>
+          <select id="recommendation-genre" name="genre">
+            <option value="">Tous les genres</option>
+          </select>
+          <label for="recommendation-decade">Décennie de sortie</label>
+          <select id="recommendation-decade" name="decade">
+            <option value="">Toutes les décennies</option>
+          </select>
+          <p id="filter-status" class="error" role="status" hidden></p>
           <button class="primary" type="submit">Afficher les films <span aria-hidden="true">→</span></button>
         </form>
         <section class="reco-results">
