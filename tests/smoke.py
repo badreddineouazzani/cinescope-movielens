@@ -22,21 +22,12 @@ def smoke(base):
     assert len(popular) == 10 and min(row["votes"] for row in popular) >= 100
     toy_story = get("/api/movies", q="Toy Story")
     assert any(row["id"] == 1 for row in toy_story)
-    for mode, params in [
-        ("content", {"movie_id": 1}),
-        ("collaborative", {"user_id": 1}),
-        ("hybrid", {"movie_id": 1, "user_id": 1}),
-    ]:
-        rows = get("/api/recommendations", mode=mode, **params)["movies"]
-        assert len(rows) == len({row["id"] for row in rows}) == 10, mode
-        assert 1 not in {row["id"] for row in rows} or mode == "collaborative"
-        scores = [row["score"] for row in rows]
-        assert scores == sorted(scores, reverse=True)
-        if mode == "collaborative":
-            assert all(1 <= score <= 5 for score in scores)
-
-    for params, expected in [({"mode": "hybrid", "movie_id": 1}, 422),
-                             ({"mode": "content", "movie_id": 5000}, 404)]:
+    rows = get("/api/recommendations", movie_id=1)["movies"]
+    assert len(rows) == len({row["id"] for row in rows}) == 10
+    assert all(row["id"] != 1 and "score" not in row for row in rows)
+    toy_genres = set(next(row["genres"] for row in toy_story if row["id"] == 1))
+    assert all(toy_genres.intersection(row["genres"]) for row in rows)
+    for params, expected in [({}, 422), ({"movie_id": 5000}, 404)]:
         try:
             get("/api/recommendations", **params)
         except HTTPError as error:
@@ -44,10 +35,11 @@ def smoke(base):
         else:
             raise AssertionError(f"HTTP {expected} attendu")
 
-    results = get("/api/evaluation")
-    assert len(results["ratings"]) == 2 and len(results["ranking"]) == 4
-    assert "/api/recommendations" in get("/openapi.json")["paths"]
-    print("CinéScope : santé, données, Top 10, recherche, 3 modes, métriques et OpenAPI vérifiés.")
+    routes = get("/openapi.json")["paths"]
+    recommendation = routes["/api/recommendations"]["get"]
+    assert {parameter["name"] for parameter in recommendation["parameters"]} == {"movie_id", "limit"}
+    assert "/api/evaluation" not in routes
+    print("CinéScope : catalogue, recherche, recommandations par titre et OpenAPI vérifiés.")
 
 
 if __name__ == "__main__":

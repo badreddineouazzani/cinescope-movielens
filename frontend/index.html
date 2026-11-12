@@ -15,9 +15,7 @@
         <a href="#accueil" data-route="accueil">Découvrir</a>
         <a href="#recommandations" data-route="recommandations">Recommandations</a>
         <a href="#analyse" data-route="analyse">Analyse</a>
-        <a href="#evaluation" data-route="evaluation">Évaluation</a>
       </nav>
-      <a class="api" href="/docs">API <span aria-hidden="true">↗</span></a>
     </div>
   </header>
   <main>
@@ -47,30 +45,18 @@
       </section>
     </section>
     <section id="recommandations" data-page hidden>
-      <div class="page-head"><h1>Recommandations</h1><p>Choisissez un film, un profil MovieLens ou les deux.</p></div>
+      <div class="page-head"><h1>Films similaires</h1><p>Choisissez un film que vous aimez pour découvrir des titres du même genre.</p></div>
       <div class="recommend-grid">
         <form id="reco-form" class="controls">
-          <label for="mode">Méthode</label>
-          <select id="mode">
-            <option value="content">Films similaires · TF-IDF</option>
-            <option value="collaborative">Profil · k-NN</option>
-            <option value="hybrid">Film et profil · Hybride</option>
-          </select>
-          <div id="title-fields">
-            <label for="query">Rechercher par titre</label>
-            <input id="query" type="search" placeholder="Ex. Toy Story" autocomplete="off">
-            <label for="film">Film</label>
-            <select id="film" required></select>
-          </div>
-          <div id="profile-fields" hidden>
-            <label for="profile">Profil MovieLens</label>
-            <input id="profile" type="number" min="1" max="943" value="1">
-          </div>
+          <label for="query">Rechercher par titre</label>
+          <input id="query" type="search" placeholder="Ex. Toy Story" autocomplete="off">
+          <label for="film">Film</label>
+          <select id="film" required></select>
           <button class="primary" type="submit">Afficher les films <span aria-hidden="true">→</span></button>
         </form>
         <section class="reco-results">
           <h2>Films suggérés</h2>
-          <div id="recommendations" aria-live="polite"><p class="empty">Sélectionnez une méthode pour lancer la recherche.</p></div>
+          <div id="recommendations" aria-live="polite"><p class="empty">Choisissez un film pour lancer la recherche.</p></div>
         </section>
       </div>
     </section>
@@ -84,16 +70,6 @@
         <h2>Les plus notés</h2>
         <div id="most-rated"></div>
       </section>
-    </section>
-    <section id="evaluation" data-page hidden>
-      <div class="page-head"><h1>Évaluation</h1><p>Résultats sur le découpage officiel MovieLens 100K.</p></div>
-      <div class="metric-grid">
-        <section class="section"><h2>Prédiction des notes</h2><div id="rating-metrics"></div></section>
-        <section class="section"><h2>Classement des films</h2><div id="rank-metrics"></div></section>
-      </div>
-      <details class="protocol"><summary>Protocole de test</summary>
-        <p>Les modèles apprennent sur <code>u1.base</code>. Les erreurs RMSE et MAE sont mesurées sur les notes de <code>u1.test</code>. Pour Precision@10, un film est pertinent s’il a reçu au moins 4/5 dans le jeu de test. La comparaison utilise les mêmes profils pour les quatre classements.</p>
-      </details>
     </section>
   </main>
   <footer><span>CinéScope</span><a href="https://grouplens.org/datasets/movielens/100k/">Données GroupLens <span aria-hidden="true">↗</span></a></footer>

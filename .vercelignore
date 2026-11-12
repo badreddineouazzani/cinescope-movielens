@@ -7,3 +7,4 @@ docs/
 pipelines/
 requirements-bigdata.txt
 tests/
+artifacts/

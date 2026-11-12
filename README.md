@@ -19,29 +19,33 @@ Ouvrir [la plateforme](http://127.0.0.1:8765/) ou [Swagger](http://127.0.0.1:876
 
 ## Architecture
 
-`ml-100k.zip → Spark ETL local → Parquet et CSV → TF-IDF / k-NN (NumPy) → FastAPI → interface web`
+`ml-100k.zip → Spark ETL local → Parquet et CSV → TF-IDF (NumPy) → FastAPI → interface web`
 
 Spark lit l’archive fournie avec des schémas explicites, convertit le catalogue en UTF-8, contrôle les notes, supprime les doublons et filtre les clés invalides. Les fichiers Parquet servent à l’application et aux notebooks. Les CSV nettoyés sont disponibles dans `data/`. Le split officiel a 80 000 notes d’apprentissage et 20 000 notes de test. Les données restent locales. [GroupLens et conditions d’utilisation](https://grouplens.org/datasets/movielens/100k/).
 
 L’interface reprend le quadrillage clair et les accents indigo et jaune visibles dans Miro. Photo du cinéma en couverture. [Denise Jans sur Unsplash](https://unsplash.com/photos/a-theater-with-red-seats-and-a-projector-screen-k1bRs5Nvq4c).
 
-## Algorithmes
+## Organisation du dépôt
 
-| Mode | Méthode |
+| Dossier | Contenu |
 | --- | --- |
-| Top films | Moyenne des notes et seuil de votes. Seuil initial de 20 votes. |
-| Films similaires | TF-IDF sur les 19 indicateurs de genres et similarité cosinus. |
-| Collaboratif | k-NN utilisateur-utilisateur. Les 30 voisins les plus proches contribuent par moyenne centrée pondérée. |
-| Hybride | Fusion des rangs réciproques du contenu et du collaboratif. Les films déjà notés et le film de départ sont exclus. |
+| `cinescope/` | API, données et moteur de recommandation |
+| `frontend/` | Interface web et images |
+| `pipelines/` | Préparation Spark et évaluation hors interface |
+| `notebooks/` | Analyse exploratoire et évaluation |
+| `docs/` | Rapport et plan des sprints |
+| `artifacts/` | Métriques agrégées |
+| `tests/` | Vérification de l’API |
 
-La note moyenne du film, ou la moyenne globale, sert de repli lorsqu’aucun voisin ne peut prédire une note. Les résultats sur le split officiel figurent dans [le rapport](docs/RAPPORT.md) et dans l’onglet Évaluation.
+## Moteur de recommandation
+
+Le serveur applique **TF-IDF sur les genres et la similarité cosinus**. Le moteur reçoit le film choisi, exclut ce titre puis renvoie jusqu’à dix films avec un genre en commun. L’utilisateur peut s’en servir sans profil ni historique. L’évaluation reste dans [le rapport](docs/RAPPORT.md) et les notebooks.
 
 ## Parcours de démonstration
 
-1. **Découvrir** — montrer le Top 10 et modifier le seuil de votes.
-2. **Recommandations** — choisir Toy Story, puis essayer le profil 1 en mode collaboratif et hybride.
-3. **Analyse** — montrer les 100 000 notes, 1 682 films et 943 profils, puis la distribution des notes.
-4. **Évaluation** — comparer RMSE/MAE et Precision@10. Ouvrir `/docs` pour tester l’API.
+1. **Découvrir** — afficher les films les mieux notés et modifier le seuil de votes.
+2. **Recommandations** — chercher et sélectionner un film, puis afficher les films similaires.
+3. **Analyse** — consulter les chiffres du catalogue, la distribution des notes et les films les plus notés.
 
 ## Sprints et suivi
 
@@ -51,7 +55,7 @@ La note moyenne du film, ou la moyenne globale, sert de repli lorsqu’aucun voi
 | 2 · Recommandations et évaluation | US7 à US11 | 20 h | 11 |
 | 3 · Spark, FastAPI et livraison | US12 à US15 | 14 h | 10 |
 
-Le [backlog d’origine](docs/BACKLOG.csv) contient les 35 tâches des deux premiers sprints. Le [plan de livraison](docs/sprints.json) contient les 15 histoires et leur découpage. Le Sprint 3 couvre la migration vers FastAPI, le pipeline Spark, les tests et la publication.
+Le [backlog d’origine](docs/BACKLOG.csv) contient les 35 tâches des deux premiers sprints. Le [plan de livraison](docs/sprints.json) contient les 15 histoires et leur découpage. Le Sprint 3 couvre la migration vers FastAPI, le pipeline Spark, les tests et la publication. Le backlog d’origine conserve les pistes étudiées, tandis que la version actuelle sert un seul moteur. [Board Miro](https://miro.com/app/board/uXjVEO5AXXU=/).
 
 ## Déploiement Vercel
 
