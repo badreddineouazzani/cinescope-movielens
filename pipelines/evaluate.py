@@ -2,8 +2,8 @@
 import numpy as np
 import pandas as pd
 
-from data import ROOT, load, read_split
-from recommender import ContentModel, UserKNN, hybrid_rank, popularity
+from cinescope.data import ROOT, load, read_split
+from cinescope.recommender import ContentModel, UserKNN, hybrid_rank, popularity
 
 
 def evaluate():
@@ -55,7 +55,7 @@ def evaluate():
 
 if __name__ == "__main__":
     rating, ranking = evaluate()
-    rating.to_csv(ROOT / "metriques_notes.csv", index=False)
-    ranking.to_csv(ROOT / "metriques_classement.csv", index=False)
+    rating.to_csv(ROOT / "artifacts" / "metriques_notes.csv", index=False)
+    ranking.to_csv(ROOT / "artifacts" / "metriques_classement.csv", index=False)
     print(rating.to_string(index=False))
     print(ranking.to_string(index=False))

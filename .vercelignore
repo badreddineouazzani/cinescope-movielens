@@ -2,9 +2,8 @@ data/
 .venv/
 .git/
 **/__pycache__/
-*.ipynb
+notebooks/
+docs/
+pipelines/
 requirements-bigdata.txt
-BACKLOG.csv
-sprints.json
-
 tests/

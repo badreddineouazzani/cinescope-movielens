@@ -8,17 +8,17 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 import pandas as pd
 
-from data import ROOT, load
-from recommender import ContentModel, UserKNN, hybrid_rank, popularity
+from cinescope.data import ROOT, load
+from cinescope.recommender import ContentModel, UserKNN, hybrid_rank, popularity
 
-WEB = ROOT / "web"
+WEB = ROOT / "frontend"
 Mode = Literal["content", "collaborative", "hybrid"]
 
 
 class Catalog:
     def __init__(self):
         if os.getenv("CINESCOPE_SOURCE") == "official" or os.getenv("VERCEL") == "1":
-            from cloud_data import load_official
+            from cinescope.cloud_data import load_official
 
             movies, self.ratings = load_official()
         else:
@@ -30,7 +30,7 @@ class Catalog:
         self.counts = self.ratings["rating"].value_counts().reindex(range(1, 6), fill_value=0)
         self.results = {}
         for key, filename in [("ratings", "metriques_notes.csv"), ("ranking", "metriques_classement.csv")]:
-            file = ROOT / filename
+            file = ROOT / "artifacts" / filename
             self.results[key] = pd.read_csv(file).round(6).to_dict("records") if file.exists() else []
 
     def records(self, ids, scores=None):

@@ -40,6 +40,6 @@ Apache Spark lit et transforme les notes et le catalogue en partitions locales. 
 
 ## Reproduction
 
-Exécuter `python pipeline.py ~/Downloads/ml-100k.zip` puis `python evaluate.py`. Les fichiers `metriques_notes.csv` et `metriques_classement.csv` sont lus par FastAPI et affichés dans l’onglet Évaluation. Les notebooks présentent la préparation et les résultats.
+Exécuter `python -m pipelines.prepare ~/Downloads/ml-100k.zip` puis `python -m pipelines.evaluate`. Les fichiers `metriques_notes.csv` et `metriques_classement.csv` sont lus par FastAPI et affichés dans l’onglet Évaluation. Les notebooks présentent la préparation et les résultats.
 
 Source des données et du découpage officiel. [GroupLens, MovieLens 100K](https://grouplens.org/datasets/movielens/100k/). [Harper et Konstan, 2015](https://doi.org/10.1145/2827872).

@@ -5,7 +5,7 @@ from zipfile import ZipFile
 
 import pandas as pd
 
-from data import GENRES
+from cinescope.data import GENRES
 
 MOVIELENS_URL = "https://files.grouplens.org/datasets/movielens/ml-100k.zip"
 

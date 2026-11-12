@@ -10,12 +10,12 @@ Python 3.12 ou une version compatible avec les paquets épinglés, et Java 17+. 
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-bigdata.txt
-python pipeline.py ~/Downloads/ml-100k.zip
-python evaluate.py
+python -m pipelines.prepare ~/Downloads/ml-100k.zip
+python -m pipelines.evaluate
 python -m uvicorn main:app --host 127.0.0.1 --port 8765
 ```
 
-Ouvrir [la plateforme](http://127.0.0.1:8765/) ou [Swagger](http://127.0.0.1:8765/docs). Pour relancer les notebooks, ouvrir Jupyter dans le dossier du projet avec un noyau Python disposant des dépendances du projet et de Matplotlib. Exécuter le pipeline avant de les ouvrir.
+Ouvrir [la plateforme](http://127.0.0.1:8765/) ou [Swagger](http://127.0.0.1:8765/docs). Pour relancer les notebooks, ouvrir les notebooks du dossier `notebooks/` dans Jupyter avec un noyau Python disposant des dépendances du projet et de Matplotlib. Exécuter le pipeline avant de les ouvrir.
 
 ## Architecture
 
@@ -34,7 +34,7 @@ L’interface reprend le quadrillage clair et les accents indigo et jaune visibl
 | Collaboratif | k-NN utilisateur-utilisateur. Les 30 voisins les plus proches contribuent par moyenne centrée pondérée. |
 | Hybride | Fusion des rangs réciproques du contenu et du collaboratif. Les films déjà notés et le film de départ sont exclus. |
 
-La note moyenne du film, ou la moyenne globale, sert de repli lorsqu’aucun voisin ne peut prédire une note. Les résultats sur le split officiel figurent dans [le rapport](RAPPORT.md) et dans l’onglet Évaluation.
+La note moyenne du film, ou la moyenne globale, sert de repli lorsqu’aucun voisin ne peut prédire une note. Les résultats sur le split officiel figurent dans [le rapport](docs/RAPPORT.md) et dans l’onglet Évaluation.
 
 ## Parcours de démonstration
 
@@ -51,7 +51,7 @@ La note moyenne du film, ou la moyenne globale, sert de repli lorsqu’aucun voi
 | 2 · Recommandations et évaluation | US7 à US11 | 20 h | 11 |
 | 3 · Spark, FastAPI et livraison | US12 à US15 | 14 h | 10 |
 
-Le [backlog d’origine](BACKLOG.csv) contient les 35 tâches des deux premiers sprints. Le [plan de livraison](sprints.json) contient les 15 histoires et leur découpage. Le Sprint 3 couvre la migration vers FastAPI, le pipeline Spark, les tests et la publication.
+Le [backlog d’origine](docs/BACKLOG.csv) contient les 35 tâches des deux premiers sprints. Le [plan de livraison](docs/sprints.json) contient les 15 histoires et leur découpage. Le Sprint 3 couvre la migration vers FastAPI, le pipeline Spark, les tests et la publication.
 
 ## Déploiement Vercel
 

@@ -7,7 +7,7 @@ from zipfile import ZipFile
 
 from pyspark.sql import SparkSession, Window, functions as F
 
-from data import DATA, GENRES, load
+from cinescope.data import DATA, GENRES, load
 
 RATINGS = "user_id INT, movie_id INT, rating INT, timestamp LONG"
 MOVIES = ("movie_id INT, title STRING, release STRING, video_release STRING, "
