@@ -100,15 +100,15 @@
   },
   {
     "id": "US11",
-    "label": "Rapport + soutenance",
+    "label": "Rédiger et vérifier le rapport technique",
     "priority": "Could",
-    "hours": 2,
+    "hours": 1.5,
     "sp": 1,
     "importance": 5,
     "sprint": 2,
     "tasks": [
       "T11.1 Rédiger le rapport technique (1 h)",
-      "T11.2 Préparer les slides de soutenance (1 h)"
+      "T11.2 Vérifier les résultats dans le rapport (0,5 h)"
     ]
   },
   {
