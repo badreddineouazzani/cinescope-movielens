@@ -13,7 +13,7 @@ python -m pip install -r requirements.txt
 python -m data_science.prepare ~/Downloads/ml-100k.zip
 npm --prefix frontend ci
 npm --prefix frontend run build
-python -m uvicorn main:app --host 127.0.0.1 --port 8765
+python -m uvicorn api_service.api:app --host 127.0.0.1 --port 8765
 ```
 
 Ouvrir [la plateforme](http://127.0.0.1:8765/) ou [Swagger](http://127.0.0.1:8765/docs). Pour relancer les notebooks dans Jupyter, préparez d’abord les CSV et utilisez un noyau Python disposant des dépendances du projet et de Matplotlib.
@@ -77,6 +77,6 @@ Le [backlog d’origine](docs/BACKLOG.csv) contient les 35 tâches des deux prem
 
 ## Déploiement Vercel
 
-Importer le dépôt privé ou exécuter `vercel deploy` après connexion. Vercel compile React avec Vite, puis déploie le point d’entrée FastAPI `main:app` avec `requirements.txt`. FastAPI sert la version compilée de React. Sur Vercel, le catalogue est chargé depuis l’archive officielle GroupLens à l’initialisation de l’instance. L’instance utilise le même nettoyage Pandas que la préparation locale. KNN calcule les distances entre films avec NumPy. L’archive et les exports détaillés sont exclus du dépôt et des fichiers envoyés au déploiement.
+Importer le dépôt privé ou exécuter `vercel deploy` après connexion. Vercel compile React avec Vite, puis charge l’application FastAPI depuis `api_service/api.py` via le point d’entrée défini dans `pyproject.toml`. Les dépendances Python sont déclarées dans `requirements.txt`. FastAPI sert la version compilée de React. Sur Vercel, le catalogue est chargé depuis l’archive officielle GroupLens à l’initialisation de l’instance. L’instance utilise le même nettoyage Pandas que la préparation locale. KNN calcule les distances entre films avec NumPy. L’archive et les exports détaillés sont exclus du dépôt et des fichiers envoyés au déploiement.
 
 Lancer `python tests/smoke.py URL` contre l’instance. Vérifier la page d’accueil, `/api/health`, `/api/stats`, une recommandation et `/docs`. [Guide FastAPI sur Vercel](https://vercel.com/docs/frameworks/api_service/fastapi).
