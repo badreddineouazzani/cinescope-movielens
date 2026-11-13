@@ -1,7 +1,7 @@
 [
   {
     "id": "US1",
-    "label": "Installer le projet et charger MovieLens",
+    "label": "Setup + load dataset",
     "priority": "Must",
     "hours": 2,
     "sp": 1,
@@ -15,7 +15,7 @@
   },
   {
     "id": "US2",
-    "label": "Explorer les notes et le catalogue",
+    "label": "EDA & statistiques",
     "priority": "Must",
     "hours": 4,
     "sp": 2,
@@ -30,7 +30,7 @@
   },
   {
     "id": "US3",
-    "label": "Contrôler et nettoyer les données",
+    "label": "Nettoyage data",
     "priority": "Must",
     "hours": 3,
     "sp": 2,
@@ -45,7 +45,7 @@
   },
   {
     "id": "US4",
-    "label": "Calculer le Top 10 de référence",
+    "label": "Baseline populaire",
     "priority": "Must",
     "hours": 3,
     "sp": 2,
@@ -59,7 +59,7 @@
   },
   {
     "id": "US5",
-    "label": "Afficher les résultats dans Streamlit",
+    "label": "Interface Streamlit",
     "priority": "Should",
     "hours": 4,
     "sp": 2,
@@ -74,7 +74,7 @@
   },
   {
     "id": "US6",
-    "label": "Documenter l’installation et le lancement",
+    "label": "Documentation",
     "priority": "Should",
     "hours": 2,
     "sp": 1,
@@ -87,7 +87,7 @@
   },
   {
     "id": "US7",
-    "label": "Trouver des films similaires par genre",
+    "label": "ML Content-Based (TF-IDF)",
     "priority": "Must",
     "hours": 6,
     "sp": 3,
@@ -101,7 +101,7 @@
   },
   {
     "id": "US8",
-    "label": "Recommander avec le k-NN collaboratif",
+    "label": "ML Collaborative (k-NN)",
     "priority": "Should",
     "hours": 5,
     "sp": 3,
@@ -116,7 +116,7 @@
   },
   {
     "id": "US9",
-    "label": "Mesurer la qualité des recommandations",
+    "label": "Evaluation RMSE/MAE",
     "priority": "Must",
     "hours": 3,
     "sp": 2,
@@ -130,7 +130,7 @@
   },
   {
     "id": "US10",
-    "label": "Fusionner les classements dans Streamlit",
+    "label": "App hybride finale",
     "priority": "Could",
     "hours": 4,
     "sp": 2,
@@ -144,7 +144,7 @@
   },
   {
     "id": "US11",
-    "label": "Préparer le rapport et la soutenance",
+    "label": "Rapport + soutenance",
     "priority": "Could",
     "hours": 2,
     "sp": 1,
