@@ -157,15 +157,15 @@
   },
   {
     "id": "US12",
-    "label": "Préparer MovieLens avec Spark et Parquet",
+    "label": "Valider le pipeline MovieLens avec Pandas",
     "priority": "Must",
     "hours": 4,
     "sp": 3,
     "sprint": 3,
     "tasks": [
-      "Lire les fichiers officiels avec schémas Spark",
-      "Nettoyer les notes et contrôler les clés",
-      "Exporter et vérifier les tables Parquet et CSV"
+      "Partager la lecture de l’archive entre le script local et FastAPI",
+      "Vérifier le nettoyage des notes et des identifiants",
+      "Vérifier les quatre exports CSV et le découpage officiel 80/20"
     ]
   },
   {

@@ -4,10 +4,8 @@ data/
 **/__pycache__/
 notebooks/
 docs/
-data_science/cleaning.py
 data_science/prepare.py
 data_science/evaluate.py
 frontend/node_modules/
-requirements-bigdata.txt
 tests/
 artifacts/

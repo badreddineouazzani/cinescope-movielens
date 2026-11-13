@@ -9,7 +9,7 @@ Aider un utilisateur à découvrir des films à partir d’un titre choisi. Le p
 
 ## Sprint 1 · Préparation et classement
 
-MovieLens 100K contient 100 000 notes sur 1 682 films, données par 943 utilisateurs. Le pipeline contrôle les identifiants et les notes de 1 à 5, retire les doublons utilisateur-film et convertit les timestamps en dates UTC. Les 19 indicateurs du catalogue servent à construire le vecteur de genres. Le moteur écarte l’indicateur « genre inconnu ». L’application affiche les 10 films ayant la meilleure note moyenne après application d’un seuil de votes, fixé à 20 par défaut.
+MovieLens 100K contient 100 000 notes sur 1 682 films, données par 943 utilisateurs. Le pipeline Pandas contrôle les identifiants et les notes de 1 à 5, retire les doublons utilisateur-film et convertit les timestamps en dates UTC. Les 19 indicateurs du catalogue servent à construire le vecteur de genres. Le moteur écarte l’indicateur « genre inconnu ». L’application affiche les 10 films ayant la meilleure note moyenne après application d’un seuil de votes, fixé à 20 par défaut.
 
 ## Sprint 2 · Recommandations et évaluation
 
@@ -24,9 +24,9 @@ L’évaluation repose sur `u1.base` et `u1.test`. Pour chacun des 456 profils �
 
 Le classement Top films retrouve davantage de films bien notés dans ce test. Le moteur de proximité entre films répond à un usage différent. Il propose des titres proches d’un film que l’utilisateur vient de choisir. Le catalogue contient 19 indicateurs de genre. Les films sans note de test ne sont pas comptés comme pertinents.
 
-## Sprint 3 · Intégration Big Data et FastAPI
+## Sprint 3 · Intégration FastAPI, React et livraison
 
-Apache Spark lit et transforme les notes et le catalogue en partitions locales. Il conserve le découpage officiel et produit des tables Parquet. FastAPI charge les vecteurs de genres au démarrage et calcule les voisins à la demande. L’interface affiche les films suggérés et les statistiques du catalogue. Les performances distribuées restent à mesurer sur un jeu de taille supérieure à MovieLens 100K.
+Pandas suffit à préparer MovieLens 100K en mémoire. Le traitement est partagé entre le script local, qui génère les CSV et le découpage officiel, et le chargement de l’archive par FastAPI sur Vercel. FastAPI charge les vecteurs de genres au démarrage et calcule les voisins à la demande. L’interface React affiche les films suggérés et les statistiques du catalogue.
 
 ## Reproduction
 

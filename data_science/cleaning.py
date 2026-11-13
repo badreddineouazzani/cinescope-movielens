@@ -1,27 +1,31 @@
-"""Nettoyage du catalogue et des notes avec PySpark."""
+"""Nettoyage du catalogue et des notes MovieLens avec Pandas."""
 
-from pyspark.sql import Window, functions as F
+import pandas as pd
 
 from data_science.storage import GENRES
 
 
 def clean_movies(movies):
-    genres = F.concat_ws(" ", *[F.when(F.col(genre) == 1, F.lit(genre)) for genre in GENRES])
-    return (
-        movies.dropna(subset=["movie_id", "title"])
-        .dropDuplicates(["movie_id"])
-        .select("movie_id", F.trim("title").alias("title"), genres.alias("genres"))
+    movies = movies.dropna(subset=["movie_id", "title"]).copy()
+    movies["title"] = movies["title"].str.strip()
+    movies = movies.loc[movies["title"].ne("")].drop_duplicates("movie_id").copy()
+    movies["genres"] = movies[GENRES].apply(
+        lambda row: " ".join(genre for genre in GENRES if row[genre] == 1), axis=1
     )
+    return movies[["movie_id", "title", "genres"]].sort_values("movie_id", ignore_index=True)
 
 
 def clean_ratings(ratings, users, movies):
-    latest = Window.partitionBy("user_id", "movie_id").orderBy(F.desc("timestamp"))
-    return (
-        ratings.dropna()
-        .where(F.col("rating").between(1, 5))
-        .withColumn("row", F.row_number().over(latest))
-        .where("row = 1")
-        .join(users, "user_id", "left_semi")
-        .join(movies, "movie_id", "left_semi")
-        .select("user_id", "movie_id", "rating", F.timestamp_seconds("timestamp").alias("rated_at"))
+    ratings = ratings.dropna()
+    ratings = ratings.loc[
+        ratings["rating"].between(1, 5)
+        & ratings["movie_id"].isin(movies["movie_id"])
+        & ratings["user_id"].isin(users)
+    ]
+    ratings = (
+        ratings.sort_values("timestamp", kind="stable")
+        .drop_duplicates(["user_id", "movie_id"], keep="last")
+        .copy()
     )
+    ratings["rated_at"] = pd.to_datetime(ratings.pop("timestamp"), unit="s", utc=True)
+    return ratings.reset_index(drop=True)
