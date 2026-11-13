@@ -5,9 +5,11 @@ import tempfile
 from pathlib import Path
 from zipfile import ZipFile
 
-from pyspark.sql import SparkSession, Window, functions as F
+from pyspark.sql import SparkSession
 
-from cinescope.data import DATA, GENRES, load
+from big_data.cleaning import clean_movies, clean_ratings
+
+from big_data.storage import DATA, GENRES, load
 
 RATINGS = "user_id INT, movie_id INT, rating INT, timestamp LONG"
 MOVIES = ("movie_id INT, title STRING, release STRING, video_release STRING, "
@@ -29,24 +31,14 @@ def prepare(archive_path):
             # Spark's CSV source expects UTF-8. Convert the legacy catalog encoding explicitly.
             item = source / "u.item"
             item.write_text(item.read_text(encoding="latin-1"), encoding="utf-8")
-            movies = (spark.read.csv(str(item), sep="|", schema=MOVIES)
-                      .dropna(subset=["movie_id", "title"]).dropDuplicates(["movie_id"])
-                      .select("movie_id", F.trim("title").alias("title"),
-                              F.concat_ws(" ", *[F.when(F.col(g) == 1, F.lit(g))
-                                                 for g in GENRES]).alias("genres")).cache())
+            movies = clean_movies(spark.read.csv(str(item), sep="|", schema=MOVIES)).cache()
             users = (spark.read.csv(str(source / "u.user"), sep="|",
                                    schema="user_id INT, age INT, gender STRING, occupation STRING, zip STRING")
                      .select("user_id").dropna().dropDuplicates())
             movies.write.mode("overwrite").parquet(str(DATA / "movies"))
-            latest = Window.partitionBy("user_id", "movie_id").orderBy(F.desc("timestamp"))
             for raw, target in [("u.data", "ratings"), ("u1.base", "train"), ("u1.test", "test")]:
-                ratings = (spark.read.csv(str(source / raw), sep="\t", schema=RATINGS)
-                           .dropna().where(F.col("rating").between(1, 5))
-                           .withColumn("row", F.row_number().over(latest)).where("row = 1")
-                           .join(users, "user_id", "left_semi")
-                           .join(movies.select("movie_id"), "movie_id", "left_semi")
-                           .select("user_id", "movie_id", "rating",
-                                   F.timestamp_seconds("timestamp").alias("rated_at")))
+                raw_ratings = spark.read.csv(str(source / raw), sep="\t", schema=RATINGS)
+                ratings = clean_ratings(raw_ratings, users, movies.select("movie_id"))
                 ratings.write.mode("overwrite").parquet(str(DATA / target))
             for target in ["movies", "ratings", "train", "test"]:
                 print(f"{target}: {spark.read.parquet(str(DATA / target)).count():,}")

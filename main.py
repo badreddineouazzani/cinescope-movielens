@@ -1,5 +1,5 @@
 """ASGI entry point for Uvicorn and Vercel."""
 
-from cinescope.api import app
+from backend.api import app
 
 __all__ = ["app"]

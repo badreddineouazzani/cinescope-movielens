@@ -35,7 +35,7 @@ h1 {font-size:clamp(2.5rem,5.3vw,4.25rem);letter-spacing:-.067em;line-height:.99
 .hero h1 {margin-top:19px}
 .hero h1 em {color:var(--indigo);font-style:normal}
 .hero p,.page-head p {color:var(--muted);line-height:1.55;max-width:38ch;margin-top:18px;font-size:16px}
-.hero-photo {background:linear-gradient(130deg,#21204b25,transparent 60%),url('/assets/cinema.jpg') center 59%/cover}
+.hero-photo {background:linear-gradient(130deg,#21204b25,transparent 60%),url('./assets/cinema.jpg') center 59%/cover}
 .primary {display:inline-flex;align-items:center;justify-content:space-between;gap:20px;cursor:pointer;border:0;color:white;background:var(--indigo);border-radius:8px;padding:12px 16px;font-weight:750;font-size:14px}
 .primary:hover {background:var(--indigo-dark)}
 .hero .primary {margin-top:23px}
@@ -100,3 +100,5 @@ footer span:first-child {font-weight:750}
   .ranking li {gap:8px;grid-template-columns:29px 1fr auto}
   .rank {width:26px;height:26px}
 }
+
+.primary:disabled {opacity:.6;cursor:default}

@@ -4,7 +4,10 @@ data/
 **/__pycache__/
 notebooks/
 docs/
-pipelines/
+big_data/cleaning.py
+big_data/prepare.py
+big_data/evaluate.py
+frontend/node_modules/
 requirements-bigdata.txt
 tests/
 artifacts/

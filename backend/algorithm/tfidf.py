@@ -1,4 +1,4 @@
-"""Classement du catalogue et recommandation par similarité de genres."""
+"""Recommandation TF-IDF avec similarité cosinus entre les genres."""
 import numpy as np
 import pandas as pd
 
@@ -7,13 +7,6 @@ def cosine_similarity(vectors):
     norms = np.linalg.norm(vectors, axis=1, keepdims=True)
     normalized = np.divide(vectors, norms, out=np.zeros_like(vectors), where=norms != 0)
     return normalized @ normalized.T
-
-
-def popularity(ratings, min_votes=20):
-    summary = ratings.groupby("movie_id")["rating"].agg(average="mean", votes="size")
-    return summary.loc[summary["votes"] >= min_votes].sort_values(
-        ["average", "votes"], ascending=False, kind="stable",
-    )
 
 
 class ContentModel:

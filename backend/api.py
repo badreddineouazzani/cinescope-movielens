@@ -6,25 +6,24 @@ from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from cinescope.data import GENRES, ROOT, load
-from cinescope.recommender import ContentModel, popularity
+from big_data.storage import ROOT, load
+from backend.recommendation_filters import RecommendationFilters
+from backend.algorithm.tfidf import ContentModel
+from backend.popularity import popularity
 
-WEB = ROOT / "frontend"
+WEB = ROOT / "frontend" / "dist"
 
 
 class Catalog:
     def __init__(self):
         if os.getenv("CINESCOPE_SOURCE") == "official" or os.getenv("VERCEL") == "1":
-            from cinescope.cloud_data import load_official
+            from big_data.cloud_source import load_official
 
             movies, self.ratings = load_official()
         else:
             movies, self.ratings = load()
         self.movies = movies.set_index("movie_id")
-        self.movie_genres = self.movies["genres"].str.get_dummies(sep=" ").astype(bool)
-        years = self.movies["title"].str.extract(r"\((\d{4})\)(?:\s+\([^)]+\))*$", expand=False)
-        self.decades = years.astype("Int64") // 10 * 10
-        self.genres = sorted(genre for genre in GENRES if genre != "unknown" and genre in self.movie_genres)
+        self.filters = RecommendationFilters(self.movies)
         self.content = ContentModel(movies)
         self.user_count = self.ratings["user_id"].nunique()
         self.summary = popularity(self.ratings, min_votes=1)
@@ -50,13 +49,16 @@ async def lifespan(app):
 
 
 app = FastAPI(title="CinéScope", description="Catalogue et recommandations MovieLens 100K",
-              version="1.4.1", lifespan=lifespan)
-app.mount("/assets", StaticFiles(directory=WEB), name="assets")
+              version="1.5.0", lifespan=lifespan)
+app.mount("/assets", StaticFiles(directory=WEB / "assets", check_dir=False), name="assets")
 
 
 @app.get("/", include_in_schema=False)
 def index():
-    return FileResponse(WEB / "index.html")
+    page = WEB / "index.html"
+    if not page.is_file():
+        raise HTTPException(503, "Compilez le frontend avec npm --prefix frontend run build.")
+    return FileResponse(page)
 
 
 @app.get("/api/health")
@@ -93,10 +95,7 @@ def popular(request: Request, min_votes: int = Query(20, ge=1, le=1000),
 @app.get("/api/recommendation-filters")
 def recommendation_filters(request: Request):
     catalog = request.app.state.catalog
-    return {
-        "genres": catalog.genres,
-        "decades": sorted(catalog.decades.dropna().unique().tolist(), reverse=True),
-    }
+    return catalog.filters.options()
 
 
 @app.get("/api/recommendations")
@@ -107,12 +106,8 @@ def recommend(request: Request, movie_id: int = Query(ge=1),
     catalog = request.app.state.catalog
     if movie_id not in catalog.movies.index:
         raise HTTPException(404, "Film introuvable.")
+    if genre is not None and genre not in catalog.filters.genres:
+        raise HTTPException(422, "Genre inconnu.")
     ranked_ids = catalog.content.rank(movie_id).index
-    if genre is not None:
-        if genre not in catalog.genres:
-            raise HTTPException(422, "Genre inconnu.")
-        ranked_ids = ranked_ids[catalog.movie_genres.loc[ranked_ids, genre].to_numpy()]
-    if decade is not None:
-        matches = catalog.decades.loc[ranked_ids].eq(decade).fillna(False)
-        ranked_ids = ranked_ids[matches.to_numpy(dtype=bool)]
-    return {"movies": catalog.records(ranked_ids[:limit])}
+    matches = catalog.filters.apply(ranked_ids, genre, decade)
+    return {"movies": catalog.records(matches[:limit])}

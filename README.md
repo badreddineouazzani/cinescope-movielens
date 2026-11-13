@@ -4,14 +4,16 @@ Plateforme académique **Big Data et Machine Learning** pour explorer MovieLens 
 
 ## Lancement local sur macOS
 
-Python 3.12 ou une version compatible avec les paquets épinglés, et Java 17+. Anaconda et Jupyter peuvent être réutilisés. Dans le dossier du projet :
+Python 3.12 ou une version compatible avec les paquets épinglés, Java 17+ et Node.js 22.12+ (LTS recommandé). Anaconda et Jupyter peuvent être réutilisés. Dans le dossier du projet :
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-bigdata.txt
-python -m pipelines.prepare ~/Downloads/ml-100k.zip
-python -m pipelines.evaluate
+python -m big_data.prepare ~/Downloads/ml-100k.zip
+python -m big_data.evaluate
+npm --prefix frontend ci
+npm --prefix frontend run build
 python -m uvicorn main:app --host 127.0.0.1 --port 8765
 ```
 
@@ -27,15 +29,22 @@ L’interface reprend le quadrillage clair et les accents indigo et jaune visibl
 
 ## Organisation du dépôt
 
-| Dossier | Contenu |
+| Fichier | Rôle |
 | --- | --- |
-| `cinescope/` | API, données et moteur de recommandation |
-| `frontend/` | Interface web et images |
-| `pipelines/` | Préparation Spark et évaluation hors interface |
-| `notebooks/` | Analyse exploratoire et évaluation |
-| `docs/` | Rapport et plan des sprints |
-| `artifacts/` | Métriques agrégées |
-| `tests/` | Vérification de l’API |
+| [frontend/src/main.jsx](frontend/src/main.jsx) | Point d’entrée React et navigation |
+| [frontend/src/components/Recommendations.jsx](frontend/src/components/Recommendations.jsx) | Recherche par titre, résultats et contrôles de filtre |
+| [frontend/src/api.js](frontend/src/api.js) | Requêtes HTTP du frontend vers FastAPI |
+| [backend/api.py](backend/api.py) | Routes FastAPI, validation des paramètres et réponses JSON |
+| [backend/recommendation_filters.py](backend/recommendation_filters.py) | Filtrage des suggestions par genre et décennie avant la limite de résultats |
+| [backend/algorithm/tfidf.py](backend/algorithm/tfidf.py) | TF-IDF sur les genres et classement par similarité cosinus |
+| [big_data/prepare.py](big_data/prepare.py) | Lecture de l’archive MovieLens avec Spark et export Parquet/CSV |
+| [big_data/cleaning.py](big_data/cleaning.py) | Suppression des doublons, validation des notes et des identifiants |
+| [big_data/storage.py](big_data/storage.py) | Lecture des tables Parquet et du découpage officiel |
+| [big_data/evaluate.py](big_data/evaluate.py) | Évaluation du moteur sur MovieLens, export des métriques |
+| [notebooks/](notebooks/) | Analyse exploratoire et évaluation |
+| [docs/](docs/) | Rapport et backlog des sprints |
+
+Pour développer avec le rechargement React, gardez FastAPI sur le port 8765 et lancez `npm --prefix frontend run dev` dans un deuxième terminal. Vite transmet les requêtes `/api` à FastAPI.
 
 ## Moteur de recommandation
 
@@ -59,6 +68,6 @@ Le [backlog d’origine](docs/BACKLOG.csv) contient les 35 tâches des deux prem
 
 ## Déploiement Vercel
 
-Importer le dépôt privé ou exécuter `vercel deploy` après connexion. Vercel détecte le point d’entrée FastAPI `main:app` et utilise `requirements.txt`. Sur Vercel, le catalogue est chargé depuis l’archive officielle GroupLens à l’initialisation de l’instance. Le pipeline Spark reste une étape locale. Les algorithmes TF-IDF et cosinus utilisent les opérations matricielles de NumPy, ce qui réduit la taille du déploiement. L’archive et les exports détaillés sont exclus du dépôt et des fichiers envoyés au déploiement.
+Importer le dépôt privé ou exécuter `vercel deploy` après connexion. Vercel compile React avec Vite, puis déploie le point d’entrée FastAPI `main:app` avec `requirements.txt`. FastAPI sert la version compilée de React. Sur Vercel, le catalogue est chargé depuis l’archive officielle GroupLens à l’initialisation de l’instance. Le pipeline Spark reste une étape locale. Les algorithmes TF-IDF et cosinus utilisent les opérations matricielles de NumPy, ce qui réduit la taille du déploiement. L’archive et les exports détaillés sont exclus du dépôt et des fichiers envoyés au déploiement.
 
 Lancer `python tests/smoke.py URL` contre l’instance. Vérifier la page d’accueil, `/api/health`, `/api/stats`, une recommandation et `/docs`. [Guide FastAPI sur Vercel](https://vercel.com/docs/frameworks/backend/fastapi).

@@ -1,8 +1,9 @@
 """Évalue hors interface le moteur par titre sur le split officiel MovieLens."""
 import pandas as pd
 
-from cinescope.data import ROOT, load, read_split
-from cinescope.recommender import ContentModel, popularity
+from big_data.storage import ROOT, load, read_split
+from backend.algorithm.tfidf import ContentModel
+from backend.popularity import popularity
 
 
 def evaluate():
