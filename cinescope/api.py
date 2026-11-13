@@ -50,7 +50,7 @@ async def lifespan(app):
 
 
 app = FastAPI(title="CinéScope", description="Catalogue et recommandations MovieLens 100K",
-              version="1.4.0", lifespan=lifespan)
+              version="1.4.1", lifespan=lifespan)
 app.mount("/assets", StaticFiles(directory=WEB), name="assets")
 
 

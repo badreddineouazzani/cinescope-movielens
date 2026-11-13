@@ -133,34 +133,61 @@ async function loadRecommendationFilters() {
     $("recommendation-genre").append(...options.map(([label, value]) => new Option(label, value)));
     $("recommendation-decade").append(...decades.map(decade => new Option("Années " + decade, decade)));
   } catch {
+    $("recommendation-genre").disabled = true;
+    $("recommendation-decade").disabled = true;
     const status = $("filter-status");
     status.textContent = "Les filtres sont indisponibles. Rechargez la page pour réessayer.";
     status.hidden = false;
   }
 }
 
+const resultFilters = $("recommendation-filters");
+const genreFilter = $("recommendation-genre");
+const decadeFilter = $("recommendation-decade");
 let recoRequest;
-$("reco-form").addEventListener("submit", async event => {
-  event.preventDefault();
+let activeMovieId;
+
+async function loadRecommendations(movieId, showLoading = false) {
   recoRequest?.abort();
   const request = new AbortController();
   recoRequest = request;
-  const params = {movie_id: $("film").value};
-  for (const [name, value] of new FormData(event.currentTarget)) {
-    if (value) params[name] = value;
-  }
-  message($("recommendations"), "Recherche en cours…");
+
+  const results = $("recommendations");
+  const params = {movie_id: movieId};
+  if (genreFilter.value) params.genre = genreFilter.value;
+  if (decadeFilter.value) params.decade = decadeFilter.value;
+  if (showLoading) message(results, "Recherche en cours…");
+  results.setAttribute("aria-busy", "true");
+
   try {
     const result = await api("recommendations", params, request.signal);
     if (request.signal.aborted) return;
     const emptyMessage = params.genre || params.decade
       ? "Aucun film similaire avec ces filtres. Essayez un autre genre ou une autre décennie."
       : "Aucun film similaire pour ce titre.";
-    renderList($("recommendations"), result.movies, community, emptyMessage);
+    renderList(results, result.movies, community, emptyMessage);
+    resultFilters.hidden = false;
   } catch (error) {
-    if (error.name !== "AbortError") message($("recommendations"), error.message, "error");
+    if (error.name !== "AbortError") message(results, error.message, "error");
+  } finally {
+    if (recoRequest === request) results.removeAttribute("aria-busy");
   }
+}
+
+$("reco-form").addEventListener("submit", event => {
+  event.preventDefault();
+  const movieId = $("film").value;
+  if (!movieId) return;
+  if (movieId !== activeMovieId) {
+    resultFilters.hidden = true;
+    genreFilter.value = "";
+    decadeFilter.value = "";
+    activeMovieId = movieId;
+  }
+  loadRecommendations(movieId, true);
 });
+
+resultFilters.addEventListener("change", () => loadRecommendations(activeMovieId));
 
 function route() {
   const routes = ["accueil","recommandations","analyse"];

@@ -64,6 +64,11 @@ select,input {padding:9px 11px;border:1px solid #cfcfe0;background:#fff;border-r
 .controls > label:first-child {margin-top:0}
 .controls select,.controls input,.controls .primary {width:100%}
 .controls .primary {margin-top:20px}
+.result-filters {min-inline-size:0;margin:20px 0 0;padding:12px 0 0;border:0;border-top:1px solid var(--line)}
+.result-filters legend {padding:0 10px 0 0;font-size:15px;font-weight:750}
+.result-filter-fields {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px}
+.result-filter-fields label {display:block;font-size:13px;font-weight:700;margin-bottom:6px}
+.result-filter-fields select {width:100%}
 .empty,.error {color:var(--muted);padding:16px 0;line-height:1.5}
 .error {color:#a02743}
 .chart {display:grid;gap:12px;margin:22px 0 4px}
