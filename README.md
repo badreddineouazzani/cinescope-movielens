@@ -21,7 +21,7 @@ Ouvrir [la plateforme](http://127.0.0.1:8765/) ou [Swagger](http://127.0.0.1:876
 
 ## Architecture
 
-`ml-100k.zip → Spark ETL local → Parquet et CSV → TF-IDF (NumPy) → FastAPI → interface web`
+`ml-100k.zip → Spark ETL local → Parquet et CSV → KNN (NumPy) → FastAPI → interface web`
 
 Spark lit l’archive fournie avec des schémas explicites, convertit le catalogue en UTF-8, contrôle les notes, supprime les doublons et filtre les clés invalides. Les fichiers Parquet servent à l’application et aux notebooks. Les CSV nettoyés sont disponibles dans `data/`. Le split officiel a 80 000 notes d’apprentissage et 20 000 notes de test. Les données restent locales. [GroupLens et conditions d’utilisation](https://grouplens.org/datasets/movielens/100k/).
 
@@ -36,7 +36,7 @@ L’interface reprend le quadrillage clair et les accents indigo et jaune visibl
 | [frontend/src/api.js](frontend/src/api.js) | Requêtes HTTP du frontend vers FastAPI |
 | [backend/api.py](backend/api.py) | Routes FastAPI, validation des paramètres et réponses JSON |
 | [backend/recommendation_filters.py](backend/recommendation_filters.py) | Filtrage des suggestions par genre et décennie avant la limite de résultats |
-| [backend/algorithm/tfidf.py](backend/algorithm/tfidf.py) | TF-IDF sur les genres et classement par similarité cosinus |
+| [backend/algorithm/knn.py](backend/algorithm/knn.py) | K plus proches voisins sur les genres binaires, avec la distance de Jaccard |
 | [big_data/prepare.py](big_data/prepare.py) | Lecture de l’archive MovieLens avec Spark et export Parquet/CSV |
 | [big_data/cleaning.py](big_data/cleaning.py) | Suppression des doublons, validation des notes et des identifiants |
 | [big_data/storage.py](big_data/storage.py) | Lecture des tables Parquet et du découpage officiel |
@@ -48,7 +48,7 @@ Pour développer avec le rechargement React, gardez FastAPI sur le port 8765 et 
 
 ## Moteur de recommandation
 
-Le serveur applique **TF-IDF sur les genres et la similarité cosinus**. Le moteur reçoit le film choisi, exclut ce titre puis renvoie jusqu’à dix films avec un genre en commun. L’utilisateur peut s’en servir sans profil ni historique. L’évaluation reste dans [le rapport](docs/RAPPORT.md) et les notebooks.
+Le serveur utilise **KNN (K plus proches voisins)**. Chaque genre est représenté par 1 s’il est présent et 0 sinon. La distance de Jaccard vaut 1 moins le nombre de genres communs divisé par le nombre de genres distincts des deux films. Le moteur renvoie les films avec les distances les plus faibles après application des filtres. Par défaut, il renvoie jusqu’à dix voisins. Le film choisi et les films sans genre commun sont écartés. L’évaluation reste dans [le rapport](docs/RAPPORT.md) et les notebooks.
 
 ## Parcours de démonstration
 
@@ -68,6 +68,6 @@ Le [backlog d’origine](docs/BACKLOG.csv) contient les 35 tâches des deux prem
 
 ## Déploiement Vercel
 
-Importer le dépôt privé ou exécuter `vercel deploy` après connexion. Vercel compile React avec Vite, puis déploie le point d’entrée FastAPI `main:app` avec `requirements.txt`. FastAPI sert la version compilée de React. Sur Vercel, le catalogue est chargé depuis l’archive officielle GroupLens à l’initialisation de l’instance. Le pipeline Spark reste une étape locale. Les algorithmes TF-IDF et cosinus utilisent les opérations matricielles de NumPy, ce qui réduit la taille du déploiement. L’archive et les exports détaillés sont exclus du dépôt et des fichiers envoyés au déploiement.
+Importer le dépôt privé ou exécuter `vercel deploy` après connexion. Vercel compile React avec Vite, puis déploie le point d’entrée FastAPI `main:app` avec `requirements.txt`. FastAPI sert la version compilée de React. Sur Vercel, le catalogue est chargé depuis l’archive officielle GroupLens à l’initialisation de l’instance. Le pipeline Spark reste une étape locale. KNN calcule les distances de Jaccard avec NumPy. L’archive et les exports détaillés sont exclus du dépôt et des fichiers envoyés au déploiement.
 
 Lancer `python tests/smoke.py URL` contre l’instance. Vérifier la page d’accueil, `/api/health`, `/api/stats`, une recommandation et `/docs`. [Guide FastAPI sur Vercel](https://vercel.com/docs/frameworks/backend/fastapi).

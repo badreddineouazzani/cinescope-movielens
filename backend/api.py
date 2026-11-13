@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 
 from big_data.storage import ROOT, load
 from backend.recommendation_filters import RecommendationFilters
-from backend.algorithm.tfidf import ContentModel
+from backend.algorithm.knn import MovieKNN
 from backend.popularity import popularity
 
 WEB = ROOT / "frontend" / "dist"
@@ -24,7 +24,7 @@ class Catalog:
             movies, self.ratings = load()
         self.movies = movies.set_index("movie_id")
         self.filters = RecommendationFilters(self.movies)
-        self.content = ContentModel(movies)
+        self.recommender = MovieKNN(movies)
         self.user_count = self.ratings["user_id"].nunique()
         self.summary = popularity(self.ratings, min_votes=1)
         self.counts = self.ratings["rating"].value_counts().reindex(range(1, 6), fill_value=0)
@@ -49,7 +49,7 @@ async def lifespan(app):
 
 
 app = FastAPI(title="CinéScope", description="Catalogue et recommandations MovieLens 100K",
-              version="1.5.0", lifespan=lifespan)
+              version="1.6.0", lifespan=lifespan)
 app.mount("/assets", StaticFiles(directory=WEB / "assets", check_dir=False), name="assets")
 
 
@@ -108,6 +108,6 @@ def recommend(request: Request, movie_id: int = Query(ge=1),
         raise HTTPException(404, "Film introuvable.")
     if genre is not None and genre not in catalog.filters.genres:
         raise HTTPException(422, "Genre inconnu.")
-    ranked_ids = catalog.content.rank(movie_id).index
+    ranked_ids = catalog.recommender.rank(movie_id).index
     matches = catalog.filters.apply(ranked_ids, genre, decade)
     return {"movies": catalog.records(matches[:limit])}

@@ -2,14 +2,14 @@
 import pandas as pd
 
 from big_data.storage import ROOT, load, read_split
-from backend.algorithm.tfidf import ContentModel
+from backend.algorithm.knn import MovieKNN
 from backend.popularity import popularity
 
 
 def evaluate():
     movies, _ = load()
     train, test = read_split()
-    content = ContentModel(movies)
+    recommender = MovieKNN(movies)
     baseline = popularity(train).index
     history = train.groupby("user_id")["movie_id"].agg(set)
     seeds = (
@@ -25,7 +25,7 @@ def evaluate():
         seen = history.loc[user_id]
         rankings = {
             "Top films (référence)": baseline.difference(seen, sort=False),
-            "Films similaires": content.rank(seeds.loc[user_id], excluded=seen).index,
+            "KNN par genre": recommender.rank(seeds.loc[user_id], excluded=seen).index,
         }
         results.append({label: len(set(ids[:10]) & relevant) / 10 for label, ids in rankings.items()})
     metrics = pd.DataFrame(results).mean().rename("Precision@10").rename_axis("classement").reset_index()
