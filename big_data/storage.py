@@ -12,6 +12,11 @@ GENRES = [
 ]
 
 
+def release_years(titles):
+    years = titles.str.extract(r"\((\d{4})\)(?:\s+\([^)]+\))*$", expand=False)
+    return years.astype("Int64")
+
+
 def load():
     movies = pd.read_parquet(DATA / "movies").sort_values("movie_id", ignore_index=True)
     ratings = pd.read_parquet(DATA / "ratings")

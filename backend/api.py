@@ -24,9 +24,9 @@ class Catalog:
             movies, self.ratings = load()
         self.movies = movies.set_index("movie_id")
         self.filters = RecommendationFilters(self.movies)
-        self.recommender = MovieKNN(movies)
         self.user_count = self.ratings["user_id"].nunique()
         self.summary = popularity(self.ratings, min_votes=1)
+        self.recommender = MovieKNN(movies, self.summary)
         self.counts = self.ratings["rating"].value_counts().reindex(range(1, 6), fill_value=0)
 
     def records(self, ids):
@@ -49,7 +49,7 @@ async def lifespan(app):
 
 
 app = FastAPI(title="CinéScope", description="Catalogue et recommandations MovieLens 100K",
-              version="1.6.0", lifespan=lifespan)
+              version="1.7.0", lifespan=lifespan)
 app.mount("/assets", StaticFiles(directory=WEB / "assets", check_dir=False), name="assets")
 
 

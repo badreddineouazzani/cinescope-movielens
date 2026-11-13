@@ -9,8 +9,9 @@ from backend.popularity import popularity
 def evaluate():
     movies, _ = load()
     train, test = read_split()
-    recommender = MovieKNN(movies)
-    baseline = popularity(train).index
+    summary = popularity(train, min_votes=1)
+    recommender = MovieKNN(movies, summary)
+    baseline = summary.loc[summary["votes"] >= 20].index
     history = train.groupby("user_id")["movie_id"].agg(set)
     seeds = (
         train.loc[train["rating"] >= 4]
@@ -25,7 +26,7 @@ def evaluate():
         seen = history.loc[user_id]
         rankings = {
             "Top films (référence)": baseline.difference(seen, sort=False),
-            "KNN par genre": recommender.rank(seeds.loc[user_id], excluded=seen).index,
+            "KNN multivarié": recommender.rank(seeds.loc[user_id], excluded=seen).index,
         }
         results.append({label: len(set(ids[:10]) & relevant) / 10 for label, ids in rankings.items()})
     metrics = pd.DataFrame(results).mean().rename("Precision@10").rename_axis("classement").reset_index()

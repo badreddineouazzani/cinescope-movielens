@@ -36,7 +36,7 @@ L’interface reprend le quadrillage clair et les accents indigo et jaune visibl
 | [frontend/src/api.js](frontend/src/api.js) | Requêtes HTTP du frontend vers FastAPI |
 | [backend/api.py](backend/api.py) | Routes FastAPI, validation des paramètres et réponses JSON |
 | [backend/recommendation_filters.py](backend/recommendation_filters.py) | Filtrage des suggestions par genre et décennie avant la limite de résultats |
-| [backend/algorithm/knn.py](backend/algorithm/knn.py) | K plus proches voisins sur les genres binaires, avec la distance de Jaccard |
+| [backend/algorithm/knn.py](backend/algorithm/knn.py) | K plus proches voisins selon le genre, l’année, la note et le nombre de votes |
 | [big_data/prepare.py](big_data/prepare.py) | Lecture de l’archive MovieLens avec Spark et export Parquet/CSV |
 | [big_data/cleaning.py](big_data/cleaning.py) | Suppression des doublons, validation des notes et des identifiants |
 | [big_data/storage.py](big_data/storage.py) | Lecture des tables Parquet et du découpage officiel |
@@ -48,7 +48,7 @@ Pour développer avec le rechargement React, gardez FastAPI sur le port 8765 et 
 
 ## Moteur de recommandation
 
-Le serveur utilise **KNN (K plus proches voisins)**. Chaque genre est représenté par 1 s’il est présent et 0 sinon. La distance de Jaccard vaut 1 moins le nombre de genres communs divisé par le nombre de genres distincts des deux films. Le moteur renvoie les films avec les distances les plus faibles après application des filtres. Par défaut, il renvoie jusqu’à dix voisins. Le film choisi et les films sans genre commun sont écartés. L’évaluation reste dans [le rapport](docs/RAPPORT.md) et les notebooks.
+Le serveur utilise **KNN (K plus proches voisins)**. Il compare les films qui partagent au moins un genre avec le titre choisi. La distance combine les genres (60 %), l’année de sortie (15 %), la note moyenne (15 %) et le nombre de votes (10 %). Le nombre de votes passe sur une échelle logarithmique pour atténuer les écarts entre les films. Le moteur renvoie jusqu’à dix voisins après application des filtres. L’évaluation figure dans [le rapport](docs/RAPPORT.md).
 
 ## Parcours de démonstration
 
@@ -68,6 +68,6 @@ Le [backlog d’origine](docs/BACKLOG.csv) contient les 35 tâches des deux prem
 
 ## Déploiement Vercel
 
-Importer le dépôt privé ou exécuter `vercel deploy` après connexion. Vercel compile React avec Vite, puis déploie le point d’entrée FastAPI `main:app` avec `requirements.txt`. FastAPI sert la version compilée de React. Sur Vercel, le catalogue est chargé depuis l’archive officielle GroupLens à l’initialisation de l’instance. Le pipeline Spark reste une étape locale. KNN calcule les distances de Jaccard avec NumPy. L’archive et les exports détaillés sont exclus du dépôt et des fichiers envoyés au déploiement.
+Importer le dépôt privé ou exécuter `vercel deploy` après connexion. Vercel compile React avec Vite, puis déploie le point d’entrée FastAPI `main:app` avec `requirements.txt`. FastAPI sert la version compilée de React. Sur Vercel, le catalogue est chargé depuis l’archive officielle GroupLens à l’initialisation de l’instance. Le pipeline Spark reste une étape locale. KNN calcule les distances entre films avec NumPy. L’archive et les exports détaillés sont exclus du dépôt et des fichiers envoyés au déploiement.
 
 Lancer `python tests/smoke.py URL` contre l’instance. Vérifier la page d’accueil, `/api/health`, `/api/stats`, une recommandation et `/docs`. [Guide FastAPI sur Vercel](https://vercel.com/docs/frameworks/backend/fastapi).

@@ -13,16 +13,16 @@ MovieLens 100K contient 100 000 notes sur 1 682 films, données par 943 utilisat
 
 ## Sprint 2 · Recommandations et évaluation
 
-KNN cherche les films les plus proches du titre sélectionné. Chaque genre est représenté par une valeur binaire. La distance de Jaccard vaut 1 moins la proportion de genres communs parmi les genres distincts des deux films. Les distances les plus faibles passent en tête. Le moteur écarte le film choisi et les films sans genre commun. Les filtres s’appliquent avant la sélection des dix voisins.
+KNN classe les films qui partagent au moins un genre avec le titre choisi. La distance pondère quatre écarts normalisés. Les genres comptent pour 60 % (distance de Jaccard), l’année pour 15 % (écart de 30 ans plafonné), la note moyenne pour 15 % (échelle de 1 à 5) et le nombre de votes pour 10 % (échelle logarithmique). Pour une année ou une note inconnue, le terme correspondant prend la valeur intermédiaire de 0,5. Le film choisi est exclu et les filtres s’appliquent avant de sélectionner jusqu’à dix voisins. Les poids ont été choisis pour donner la priorité aux genres.
 
-L’évaluation repose sur `u1.base` et `u1.test`. Pour chacun des 456 profils éligibles, le moteur prend un titre bien noté dans l’apprentissage, puis vérifie combien des dix suggestions figurent parmi les films notés au moins 4/5 dans le test. Le classement Top films utilise le même jeu d’apprentissage et les mêmes profils.
+L’évaluation repose sur `u1.base` et `u1.test`. Pour chacun des 456 profils éligibles, le moteur prend un titre bien noté dans l’apprentissage, puis vérifie combien des dix suggestions figurent parmi les films notés au moins 4/5 dans le test. KNN calcule les notes moyennes et les nombres de votes à partir du jeu d’apprentissage. Le classement Top films utilise ce même jeu et les mêmes profils.
 
 | Classement | Precision@10 |
 | --- | ---: |
 | Top films (référence) | 11,34 % |
-| KNN par genre | 5,31 % |
+| KNN multivarié | 6,07 % |
 
-Le classement Top films retrouve davantage de films bien notés dans ce test. Le moteur par genre répond à un usage différent. Il propose des titres proches d’un film que l’utilisateur vient de choisir. Le catalogue contient 19 indicateurs de genre. Les films sans note de test ne sont pas comptés comme pertinents.
+Le classement Top films retrouve davantage de films bien notés dans ce test. Le moteur de proximité entre films répond à un usage différent. Il propose des titres proches d’un film que l’utilisateur vient de choisir. Le catalogue contient 19 indicateurs de genre. Les films sans note de test ne sont pas comptés comme pertinents.
 
 ## Sprint 3 · Intégration Big Data et FastAPI
 

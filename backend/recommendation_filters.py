@@ -1,13 +1,12 @@
 """Filtres de genre et de décennie appliqués aux suggestions classées."""
 
-from big_data.storage import GENRES
+from big_data.storage import GENRES, release_years
 
 
 class RecommendationFilters:
     def __init__(self, movies):
         self.movie_genres = movies["genres"].str.get_dummies(sep=" ").astype(bool)
-        years = movies["title"].str.extract(r"\((\d{4})\)(?:\s+\([^)]+\))*$", expand=False)
-        self.decades = years.astype("Int64") // 10 * 10
+        self.decades = release_years(movies["title"]) // 10 * 10
         self.genres = sorted(genre for genre in GENRES if genre != "unknown" and genre in self.movie_genres)
 
     def options(self):
