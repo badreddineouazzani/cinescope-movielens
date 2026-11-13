@@ -7,9 +7,9 @@ from zipfile import ZipFile
 
 from pyspark.sql import SparkSession
 
-from big_data.cleaning import clean_movies, clean_ratings
+from data_science.cleaning import clean_movies, clean_ratings
 
-from big_data.storage import DATA, GENRES, load
+from data_science.storage import DATA, GENRES, load
 
 RATINGS = "user_id INT, movie_id INT, rating INT, timestamp LONG"
 MOVIES = ("movie_id INT, title STRING, release STRING, video_release STRING, "

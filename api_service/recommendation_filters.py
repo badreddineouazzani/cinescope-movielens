@@ -1,6 +1,6 @@
 """Filtres de genre et de décennie appliqués aux suggestions classées."""
 
-from big_data.storage import GENRES, release_years
+from data_science.storage import GENRES, release_years
 
 
 class RecommendationFilters:

@@ -1,9 +1,9 @@
 """Évalue hors interface le moteur par titre sur le split officiel MovieLens."""
 import pandas as pd
 
-from big_data.storage import ROOT, load, read_split
-from backend.algorithm.knn import MovieKNN
-from backend.popularity import popularity
+from data_science.knn import MovieKNN
+from data_science.popularity import popularity
+from data_science.storage import ROOT, load, read_split
 
 
 def evaluate():

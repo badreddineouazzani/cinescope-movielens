@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 
-from big_data.storage import release_years
+from data_science.storage import release_years
 
 
 class MovieKNN:

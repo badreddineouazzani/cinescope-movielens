@@ -4,9 +4,9 @@ data/
 **/__pycache__/
 notebooks/
 docs/
-big_data/cleaning.py
-big_data/prepare.py
-big_data/evaluate.py
+data_science/cleaning.py
+data_science/prepare.py
+data_science/evaluate.py
 frontend/node_modules/
 requirements-bigdata.txt
 tests/

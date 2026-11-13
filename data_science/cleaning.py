@@ -2,7 +2,7 @@
 
 from pyspark.sql import Window, functions as F
 
-from big_data.storage import GENRES
+from data_science.storage import GENRES
 
 
 def clean_movies(movies):

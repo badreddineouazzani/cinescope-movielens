@@ -10,8 +10,8 @@ Python 3.12 ou une version compatible avec les paquets épinglés, Java 17+ et N
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-bigdata.txt
-python -m big_data.prepare ~/Downloads/ml-100k.zip
-python -m big_data.evaluate
+python -m data_science.prepare ~/Downloads/ml-100k.zip
+python -m data_science.evaluate
 npm --prefix frontend ci
 npm --prefix frontend run build
 python -m uvicorn main:app --host 127.0.0.1 --port 8765
@@ -29,18 +29,20 @@ L’interface reprend le quadrillage clair et les accents indigo et jaune visibl
 
 ## Organisation du dépôt
 
+`frontend/` contient l’interface React. `api_service/` expose le catalogue et les recommandations via FastAPI. `data_science/` regroupe la préparation Spark, le moteur KNN et son évaluation. Les données générées localement sont dans `data/`.
+
 | Fichier | Rôle |
 | --- | --- |
 | [frontend/src/main.jsx](frontend/src/main.jsx) | Point d’entrée React et navigation |
 | [frontend/src/components/Recommendations.jsx](frontend/src/components/Recommendations.jsx) | Recherche par titre, résultats et contrôles de filtre |
 | [frontend/src/api.js](frontend/src/api.js) | Requêtes HTTP du frontend vers FastAPI |
-| [backend/api.py](backend/api.py) | Routes FastAPI, validation des paramètres et réponses JSON |
-| [backend/recommendation_filters.py](backend/recommendation_filters.py) | Filtrage des suggestions par genre et décennie avant la limite de résultats |
-| [backend/algorithm/knn.py](backend/algorithm/knn.py) | K plus proches voisins selon le genre, l’année, la note et le nombre de votes |
-| [big_data/prepare.py](big_data/prepare.py) | Lecture de l’archive MovieLens avec Spark et export Parquet/CSV |
-| [big_data/cleaning.py](big_data/cleaning.py) | Suppression des doublons, validation des notes et des identifiants |
-| [big_data/storage.py](big_data/storage.py) | Lecture des tables Parquet et du découpage officiel |
-| [big_data/evaluate.py](big_data/evaluate.py) | Évaluation du moteur sur MovieLens, export des métriques |
+| [api_service/api.py](api_service/api.py) | Routes FastAPI, validation des paramètres et réponses JSON |
+| [api_service/recommendation_filters.py](api_service/recommendation_filters.py) | Filtrage des suggestions par genre et décennie avant la limite de résultats |
+| [data_science/knn.py](data_science/knn.py) | K plus proches voisins selon le genre, l’année, la note et le nombre de votes |
+| [data_science/prepare.py](data_science/prepare.py) | Lecture de l’archive MovieLens avec Spark et export Parquet/CSV |
+| [data_science/cleaning.py](data_science/cleaning.py) | Suppression des doublons, validation des notes et des identifiants |
+| [data_science/storage.py](data_science/storage.py) | Lecture des tables Parquet et du découpage officiel |
+| [data_science/evaluate.py](data_science/evaluate.py) | Évaluation du moteur sur MovieLens, export des métriques |
 | [notebooks/](notebooks/) | Analyse exploratoire et évaluation |
 | [docs/](docs/) | Rapport et backlog des sprints |
 
@@ -70,4 +72,4 @@ Le [backlog d’origine](docs/BACKLOG.csv) contient les 35 tâches des deux prem
 
 Importer le dépôt privé ou exécuter `vercel deploy` après connexion. Vercel compile React avec Vite, puis déploie le point d’entrée FastAPI `main:app` avec `requirements.txt`. FastAPI sert la version compilée de React. Sur Vercel, le catalogue est chargé depuis l’archive officielle GroupLens à l’initialisation de l’instance. Le pipeline Spark reste une étape locale. KNN calcule les distances entre films avec NumPy. L’archive et les exports détaillés sont exclus du dépôt et des fichiers envoyés au déploiement.
 
-Lancer `python tests/smoke.py URL` contre l’instance. Vérifier la page d’accueil, `/api/health`, `/api/stats`, une recommandation et `/docs`. [Guide FastAPI sur Vercel](https://vercel.com/docs/frameworks/backend/fastapi).
+Lancer `python tests/smoke.py URL` contre l’instance. Vérifier la page d’accueil, `/api/health`, `/api/stats`, une recommandation et `/docs`. [Guide FastAPI sur Vercel](https://vercel.com/docs/frameworks/api_service/fastapi).

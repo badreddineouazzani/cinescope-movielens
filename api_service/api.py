@@ -6,10 +6,10 @@ from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from big_data.storage import ROOT, load
-from backend.recommendation_filters import RecommendationFilters
-from backend.algorithm.knn import MovieKNN
-from backend.popularity import popularity
+from api_service.recommendation_filters import RecommendationFilters
+from data_science.knn import MovieKNN
+from data_science.popularity import popularity
+from data_science.storage import ROOT, load
 
 WEB = ROOT / "frontend" / "dist"
 
@@ -17,7 +17,7 @@ WEB = ROOT / "frontend" / "dist"
 class Catalog:
     def __init__(self):
         if os.getenv("CINESCOPE_SOURCE") == "official" or os.getenv("VERCEL") == "1":
-            from big_data.cloud_source import load_official
+            from data_science.cloud_source import load_official
 
             movies, self.ratings = load_official()
         else:
@@ -49,7 +49,7 @@ async def lifespan(app):
 
 
 app = FastAPI(title="CinéScope", description="Catalogue et recommandations MovieLens 100K",
-              version="1.7.0", lifespan=lifespan)
+              version="1.7.1", lifespan=lifespan)
 app.mount("/assets", StaticFiles(directory=WEB / "assets", check_dir=False), name="assets")
 
 
