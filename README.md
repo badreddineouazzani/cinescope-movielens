@@ -69,11 +69,11 @@ Pour relancer le même calcul dans le terminal et actualiser `artifacts/metrique
 
 | Sprint | User Stories | Charge | SP |
 | --- | --- | ---: | ---: |
-| 1 · Données et Top 10 | US1 à US6 | 18 h | 10 |
-| 2 · Recommandations et évaluation | US7 à US11 | 20 h | 11 |
+| 1 · Données et Top 10 | US1 à US4, US6 | 14 h | 8 |
+| 2 · Recommandations et évaluation | US7, US9, US11 | 11 h | 6 |
 | 3 · Intégration FastAPI, React et livraison | US12 à US15 | 14 h | 10 |
 
-Le [backlog d’origine](docs/BACKLOG.csv) contient les 35 tâches des deux premiers sprints. Le [plan de livraison](docs/sprints.json) contient les 15 histoires et leur découpage. Le Sprint 3 couvre la validation du pipeline Pandas, l’intégration FastAPI et React, les tests et la publication. Le Product Backlog Jira reprend les intitulés des slides pour US1 à US11. La description de chaque story indique où en est le livrable dans la version actuelle. [Product Backlog Jira](https://um5-team-bdia2627.atlassian.net/issues/?jql=project%20%3D%20CINE%20AND%20issuetype%20%3D%20Story%20ORDER%20BY%20Rank%20ASC) · [Tableau de suivi Jira](https://um5-team-bdia2627.atlassian.net/jira/software/projects/CINE/boards/2) · [Board Miro](https://miro.com/app/board/uXjVEO5AXXU=/).
+Le plan de livraison réunit les 12 stories actives et leurs tâches. Les identifiants US reprennent la numérotation de la présentation. Le backlog d’origine conserve le plan initial des deux premiers sprints. [Plan de livraison](docs/sprints.json) · [Backlog d’origine](docs/BACKLOG.csv) · [Product Backlog Jira](https://um5-team-bdia2627.atlassian.net/issues/?jql=project%20%3D%20CINE%20AND%20issuetype%20%3D%20Story%20ORDER%20BY%20Rank%20ASC) · [Tableau de suivi Jira](https://um5-team-bdia2627.atlassian.net/jira/software/projects/CINE/boards/2?groupBy=subtask) · [Board Miro](https://miro.com/app/board/uXjVEO5AXXU=/).
 
 ## Déploiement Vercel
 

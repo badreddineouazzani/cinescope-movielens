@@ -58,21 +58,6 @@
     ]
   },
   {
-    "id": "US5",
-    "label": "Interface Streamlit",
-    "priority": "Should",
-    "hours": 4,
-    "sp": 2,
-    "importance": 6,
-    "sprint": 1,
-    "tasks": [
-      "T5.1 Initialiser l’interface Streamlit (1 h)",
-      "T5.2 Ajouter la sélection du seuil de votes (1 h)",
-      "T5.3 Afficher les titres, les notes et les votes (1 h)",
-      "T5.4 Mettre en forme et tester l’interface (1 h)"
-    ]
-  },
-  {
     "id": "US6",
     "label": "Documentation",
     "priority": "Should",
@@ -87,36 +72,21 @@
   },
   {
     "id": "US7",
-    "label": "ML Content-Based (TF-IDF)",
+    "label": "Recommander des films similaires avec le KNN",
     "priority": "Must",
     "hours": 6,
     "sp": 3,
     "importance": 9,
     "sprint": 2,
     "tasks": [
-      "T7.1 Vectoriser les genres avec TF-IDF (2 h)",
-      "T7.2 Calculer la similarité cosinus entre les films (2 h)",
+      "T7.1 Préparer les genres, l’année, la note moyenne et le nombre de votes (2 h)",
+      "T7.2 Calculer la distance pondérée du KNN entre les films (2 h)",
       "T7.3 Retourner les films similaires au titre choisi (2 h)"
     ]
   },
   {
-    "id": "US8",
-    "label": "ML Collaborative (k-NN)",
-    "priority": "Should",
-    "hours": 5,
-    "sp": 3,
-    "importance": 7,
-    "sprint": 2,
-    "tasks": [
-      "T8.1 Construire la matrice de notes utilisateur × film (1,5 h)",
-      "T8.2 Calculer la similarité entre utilisateurs (1,5 h)",
-      "T8.3 Prédire les notes avec le k-NN (1,5 h)",
-      "T8.4 Tester les prédictions et l’exclusion des films notés (0,5 h)"
-    ]
-  },
-  {
     "id": "US9",
-    "label": "Evaluation RMSE/MAE",
+    "label": "Évaluer les recommandations avec Precision@10",
     "priority": "Must",
     "hours": 3,
     "sp": 2,
@@ -124,22 +94,8 @@
     "sprint": 2,
     "tasks": [
       "T9.1 Charger le découpage officiel train/test (0,5 h)",
-      "T9.2 Mesurer RMSE, MAE et Precision@10 (1,5 h)",
+      "T9.2 Calculer Precision@10 pour le KNN et le Top films (1,5 h)",
       "T9.3 Comparer aux références et interpréter les résultats (1 h)"
-    ]
-  },
-  {
-    "id": "US10",
-    "label": "App hybride finale",
-    "priority": "Could",
-    "hours": 4,
-    "sp": 2,
-    "importance": 6,
-    "sprint": 2,
-    "tasks": [
-      "T10.1 Fusionner les rangs des deux modèles (2 h)",
-      "T10.2 Intégrer les modes dans Streamlit (1,5 h)",
-      "T10.3 Préparer le parcours de démonstration (0,5 h)"
     ]
   },
   {
@@ -188,8 +144,8 @@
     "sp": 2,
     "sprint": 3,
     "tasks": [
-      "Intégrer les parcours Découvrir, Recommandations, Analyse et Évaluation",
-      "Tester les trois modes dans le navigateur et les réponses de l’API"
+      "Intégrer les parcours Découvrir, Recommandations et Analyse dans React",
+      "Tester ces parcours et les réponses de l’API"
     ]
   },
   {
